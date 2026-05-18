@@ -1,39 +1,85 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  OnModuleInit,
+  OnModuleDestroy,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { parse } from 'csv-parse/sync';
+import { DbService } from '../db/db.service';
+import { products, DbProduct } from '../db/schema';
 import { Product, Stock } from '../common/types/product.types';
 
-const CACHE_TTL_MS = 5 * 60 * 1000;
+const REFRESH_INTERVAL_MS = 2 * 60 * 60 * 1000; // 2 часа
 
 @Injectable()
-export class SheetsService {
+export class SheetsService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(SheetsService.name);
-  private cachedData: Product[] = [];
-  private lastFetched: number | null = null;
+  private refreshTimer: NodeJS.Timeout | null = null;
 
-  constructor(private readonly config: ConfigService) {}
+  constructor(
+    private readonly config: ConfigService,
+    private readonly dbService: DbService,
+  ) {}
+
+  async onModuleInit() {
+    await this.refresh();
+    this.scheduleNext();
+  }
+
+  onModuleDestroy() {
+    if (this.refreshTimer) clearTimeout(this.refreshTimer);
+  }
 
   async getData(): Promise<Product[]> {
-    if (this.lastFetched && Date.now() - this.lastFetched < CACHE_TTL_MS) {
-      return this.cachedData;
-    }
-    await this.refresh();
-    return this.cachedData;
+    const rows: DbProduct[] = await this.dbService.db.select().from(products);
+    return rows.map((r) => ({
+      segment: r.segment,
+      brand: r.brand,
+      name: r.name,
+      volume: r.volume,
+      prices: r.prices,
+      stock: r.stock ?? null,
+    }));
   }
 
   async refresh(): Promise<void> {
-    const [products, inventory] = await Promise.all([
+    this.logger.log('Refreshing sheets...');
+
+    const [productList, inventory] = await Promise.all([
       this.fetchPriceSheet(),
       this.fetchInventory(),
     ]);
 
-    this.cachedData = products.map((p) => ({
-      ...p,
+    const rows = productList.map((p) => ({
+      segment: p.segment,
+      brand: p.brand,
+      name: p.name,
+      volume: p.volume,
+      prices: p.prices,
       stock: inventory.get(p.name.toLowerCase()) ?? null,
     }));
 
-    this.lastFetched = Date.now();
-    this.logger.log(`Loaded ${this.cachedData.length} products`);
+    await this.dbService.db.delete(products);
+
+    const chunkSize = 500;
+    for (let i = 0; i < rows.length; i += chunkSize) {
+      await this.dbService.db
+        .insert(products)
+        .values(rows.slice(i, i + chunkSize));
+    }
+
+    this.logger.log(`Saved ${rows.length} products to DB`);
+
+    // Сбрасываем таймер — 2 часа отсчитываются от этого момента
+    this.scheduleNext();
+  }
+
+  private scheduleNext() {
+    if (this.refreshTimer) clearTimeout(this.refreshTimer);
+    this.refreshTimer = setTimeout(() => {
+      void this.refresh();
+    }, REFRESH_INTERVAL_MS);
   }
 
   private async fetchPriceSheet(): Promise<Omit<Product, 'stock'>[]> {
@@ -106,7 +152,7 @@ export class SheetsService {
       segment,
       brand: get('Бренд'),
       name,
-      volume: Number(get('Обʼєм') || get('Объём') || 0),
+      volume: this.parseVolume(get('Обʼєм') || get('Объём')),
       prices: {
         full: toPrice('Ціни дівчат РРЦ'),
         500: toPrice('Ціни дівчат 500'),
@@ -121,6 +167,11 @@ export class SheetsService {
   // row1: "Сегмент", "Бренд", ..., "Ціни дівчат", "", ..., "Ціни сайтів", ...
   // row2: "",        "",     ..., "РРЦ", "500", "250", ...
   // Объединяем: "Сегмент", "Бренд", ..., "Ціни дівчат РРЦ", "Ціни дівчат 500", ...
+  private parseVolume(raw: string): number {
+    const n = parseInt(raw || '0', 10);
+    return isNaN(n) ? 0 : n;
+  }
+
   private buildColumnNames(row1: string[], row2: string[]): string[] {
     const len = Math.max(row1.length, row2.length);
     const names: string[] = [];

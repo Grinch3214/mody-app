@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Query } from '@nestjs/common';
+import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { SheetsService } from './sheets.service';
 import { FilterService } from './filter.service';
 import { FilterQueryDto } from './filter.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('sheets')
 export class SheetsController {
@@ -16,8 +17,9 @@ export class SheetsController {
   }
 
   @Post('refresh')
+  @UseGuards(JwtAuthGuard)
   async refresh() {
     await this.sheetsService.refresh();
-    return { message: 'Cache refreshed' };
+    return { message: 'Refreshed' };
   }
 }
