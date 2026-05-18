@@ -37,18 +37,8 @@ export class SheetsService {
   }
 
   private async fetchPriceSheet(): Promise<Omit<Product, 'stock'>[]> {
-    const id = this.config.getOrThrow<string>('GOOGLE_SHEET_ID');
-    const url = `https://docs.google.com/spreadsheets/d/${id}/export?format=csv`;
-
     this.logger.log('Fetching price sheet...');
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(
-        `Price sheet fetch failed: ${response.status} ${response.statusText}`,
-      );
-    }
-
-    const rows = parse(await response.text(), { trim: true });
+    const rows = await this.fetchSheetRows('GOOGLE_SHEET_ID');
     if (rows.length < 3) return [];
 
     const columnNames = this.buildColumnNames(rows[0], rows[1]);
@@ -60,18 +50,8 @@ export class SheetsService {
   }
 
   private async fetchInventory(): Promise<Map<string, Stock>> {
-    const id = this.config.getOrThrow<string>('GOOGLE_INVENTORY_SHEET_ID');
-    const url = `https://docs.google.com/spreadsheets/d/${id}/export?format=csv`;
-
     this.logger.log('Fetching inventory sheet...');
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(
-        `Inventory fetch failed: ${response.status} ${response.statusText}`,
-      );
-    }
-
-    const rows = parse(await response.text(), { trim: true });
+    const rows = await this.fetchSheetRows('GOOGLE_INVENTORY_SHEET_ID');
     const map = new Map<string, Stock>();
 
     // 2 строки заголовков, данные с индекса 2
@@ -92,6 +72,20 @@ export class SheetsService {
 
     this.logger.log(`Inventory loaded: ${map.size} items`);
     return map;
+  }
+
+  private async fetchSheetRows(envKey: string): Promise<string[][]> {
+    const id = this.config.getOrThrow<string>(envKey);
+    const url = `https://docs.google.com/spreadsheets/d/${id}/export?format=csv`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch sheet [${envKey}]: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    return parse(await response.text(), { trim: true });
   }
 
   private normalizeProductRow(

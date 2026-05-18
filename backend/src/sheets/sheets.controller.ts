@@ -1,13 +1,18 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, Query } from '@nestjs/common';
 import { SheetsService } from './sheets.service';
+import { FilterService } from './filter.service';
+import { FilterQueryDto } from './filter.dto';
 
 @Controller('sheets')
 export class SheetsController {
-  constructor(private readonly sheetsService: SheetsService) {}
+  constructor(
+    private readonly sheetsService: SheetsService,
+    private readonly filterService: FilterService,
+  ) {}
 
   @Get()
-  async getAll() {
-    return this.sheetsService.getData();
+  async getAll(@Query() query: FilterQueryDto) {
+    return this.filterService.filter(query);
   }
 
   @Post('refresh')
