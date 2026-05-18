@@ -1,31 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { parse } from 'csv-parse/sync';
+import { Product, Stock } from '../common/types/product.types';
 
 const CACHE_TTL_MS = 5 * 60 * 1000;
-
-export interface ProductPrices {
-  full: number | null;
-  500: number | null;
-  250: number | null;
-  100: number | null;
-  50: number | null;
-}
-
-export interface Stock {
-  bottles: number;
-  openMl: number;
-  totalMl: number;
-}
-
-export interface Product {
-  segment: string;
-  brand: string;
-  name: string;
-  volume: number;
-  prices: ProductPrices;
-  stock: Stock | null;
-}
 
 @Injectable()
 export class SheetsService {
