@@ -1,28 +1,30 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../prisma/prisma.service';
+import { eq } from 'drizzle-orm';
 import * as bcrypt from 'bcrypt';
+import { DbService } from '../db/db.service';
+import { users } from '../db/schema';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
-    private jwtService: JwtService,
+    private readonly dbService: DbService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string) {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+  async login(email: string, password: string) {
+    const [user] = await this.dbService.db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) throw new UnauthorizedException('Invalid credentials');
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) throw new UnauthorizedException('Invalid credentials');
 
-    return { id: user.id, email: user.email, role: user.role };
-  }
-
-  async login(email: string, password: string) {
-    const user = await this.validateUser(email, password);
-    const payload = { sub: user.id, email: user.email, role: user.role };
-    return { access_token: this.jwtService.sign(payload) };
+    const token = this.jwtService.sign({ sub: user.id, email: user.email });
+    return { access_token: token };
   }
 }
