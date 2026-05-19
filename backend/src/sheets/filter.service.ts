@@ -7,13 +7,17 @@ import { FilterQueryDto } from './filter.dto';
 export class FilterService {
   constructor(private readonly sheetsService: SheetsService) {}
 
-  async filter(query: FilterQueryDto): Promise<Product[]> {
+  async filter(query: FilterQueryDto, withStock = false): Promise<Product[]> {
     const products = await this.sheetsService.getData();
     const filters = this.buildFilters(query);
 
-    if (!filters.length) return products;
+    const result = filters.length
+      ? products.filter((p) => filters.every((fn) => fn(p)))
+      : products;
 
-    return products.filter((p) => filters.every((fn) => fn(p)));
+    if (withStock) return result;
+
+    return result.map((p) => ({ ...p, stock: null }));
   }
 
   private buildFilters(query: FilterQueryDto): Array<(p: Product) => boolean> {
