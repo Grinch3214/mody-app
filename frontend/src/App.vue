@@ -1,17 +1,22 @@
 <template>
-  <div>
-    <button @click="store.fetchProducts()">Загрузить</button>
-    <p v-if="store.loading">Загрузка...</p>
-    <p v-if="store.error">Ошибка: {{ store.error }}</p>
-    <div v-for="p in store.products" :key="p.name">
-      <b>{{ p.name }}</b> — {{ p.brand }} / {{ p.segment }} / {{ p.volume }}мл
-      <span v-if="p.stock"> | остаток: {{ p.stock.bottles }} шт</span>
-    </div>
-  </div>
+  <AppHeader @open-login="showLogin = true" />
+  <main class="main">
+    <RouterView />
+  </main>
+  <LoginPopup v-if="showLogin" @close="showLogin = false" />
 </template>
 
 <script setup lang="ts">
-import { useGeneralStore } from './stores/general'
+import { ref } from 'vue'
+import { RouterView } from 'vue-router'
+import AppHeader from '@/components/layout/AppHeader.vue'
+import LoginPopup from '@/components/auth/LoginPopup.vue'
 
-const store = useGeneralStore()
+const showLogin = ref(false)
 </script>
+
+<style lang="scss" scoped>
+.main {
+  padding: var(--spacing-xl);
+}
+</style>

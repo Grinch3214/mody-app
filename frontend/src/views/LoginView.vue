@@ -1,0 +1,67 @@
+<template>
+  <div class="login-page">
+    <div class="login-page__container">
+      <div class="login-page__header">
+        <h1 class="login-page__title">Mody</h1>
+        <p class="login-page__subtitle">Управление каталогом</p>
+      </div>
+      <LoginForm />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import LoginForm from '@/components/auth/LoginForm.vue'
+
+const auth = useAuthStore()
+const router = useRouter()
+
+watch(
+  () => auth.isLoggedIn,
+  (loggedIn) => {
+    if (loggedIn) void router.push('/sheets')
+  },
+)
+</script>
+
+<style lang="scss" scoped>
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--color-bg);
+
+  &__container {
+    width: 100%;
+    max-width: 360px;
+    padding: var(--spacing-xl) var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xl);
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  &__title {
+    font-size: var(--font-size-xl);
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+  }
+
+  &__subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    letter-spacing: 0.04em;
+  }
+}
+</style>
