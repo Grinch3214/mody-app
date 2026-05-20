@@ -5,7 +5,11 @@
         <h1 class="login-page__title">Mody</h1>
         <p class="login-page__subtitle">Управление каталогом</p>
       </div>
-      <LoginForm />
+      <template v-if="auth.isLoggedIn">
+        <p class="login-page__already">Вы уже в системе</p>
+        <el-button @click="router.push('/sheets')">Перейти к каталогу</el-button>
+      </template>
+      <LoginForm v-else />
     </div>
   </div>
 </template>
@@ -62,6 +66,12 @@ watch(
     font-size: var(--el-font-size-small);
     color: var(--el-text-color-secondary);
     letter-spacing: 0.04em;
+  }
+
+  &__already {
+    font-size: var(--el-font-size-base);
+    color: var(--el-text-color-secondary);
+    text-align: center;
   }
 }
 </style>
