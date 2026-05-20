@@ -77,7 +77,7 @@ const baseColumns = [
     cellRenderer: ({ rowIndex }: IndexCellProps) =>
       h('span', { style: { color: 'var(--el-text-color-placeholder)' } }, rowIndex + 1),
   },
-  { key: 'segment', dataKey: 'segment', title: 'Сегмент', width: 150 },
+  { key: 'segment', dataKey: 'segment', title: 'Категория', width: 150 },
   { key: 'brand', dataKey: 'brand', title: 'Бренд', width: 130 },
   { key: 'name', dataKey: 'name', title: 'Название', width: 220, flexGrow: 1 },
   {

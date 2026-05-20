@@ -27,7 +27,7 @@
 
       <el-dropdown trigger="click" :hide-on-click="false" @command="toggleSegment">
         <el-button>
-          {{ selectedSegments.length ? `Сегмент (${selectedSegments.length})` : 'Сегмент' }}
+          {{ selectedSegments.length ? `Категория (${selectedSegments.length})` : 'Категория' }}
           <el-icon class="el-icon--right"><ArrowDown /></el-icon>
         </el-button>
         <template #dropdown>
@@ -59,6 +59,8 @@
           {{ seg }}
         </el-tag>
       </div>
+
+      <span class="filters__count">{{ store.products.length }} позиций</span>
     </div>
   </div>
 </template>
@@ -158,6 +160,13 @@ function load() {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-sm);
+  }
+
+  &__count {
+    margin-left: auto;
+    font-size: var(--el-font-size-small);
+    color: var(--el-text-color-placeholder);
+    white-space: nowrap;
   }
 }
 
