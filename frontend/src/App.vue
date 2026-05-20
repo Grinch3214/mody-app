@@ -3,7 +3,7 @@
   <main class="main">
     <RouterView />
   </main>
-  <LoginPopup v-if="showLogin" @close="showLogin = false" />
+  <LoginPopup v-model="showLogin" />
 </template>
 
 <script setup lang="ts">
