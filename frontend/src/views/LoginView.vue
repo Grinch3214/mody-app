@@ -33,7 +33,7 @@ watch(
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: var(--color-bg);
+  background: var(--el-bg-color-page);
 
   &__container {
     width: 100%;
@@ -55,12 +55,12 @@ watch(
     font-weight: 300;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-text-primary);
+    color: var(--el-text-color-primary);
   }
 
   &__subtitle {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
+    font-size: var(--el-font-size-small);
+    color: var(--el-text-color-secondary);
     letter-spacing: 0.04em;
   }
 }

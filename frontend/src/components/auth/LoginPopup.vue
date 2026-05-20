@@ -42,28 +42,28 @@ watch(() => auth.isLoggedIn, (loggedIn) => {
   width: 100%;
   max-width: 360px;
   padding: var(--spacing-2xl) var(--spacing-xl);
-  background: var(--color-surface);
-  border-radius: var(--border-radius);
+  background: var(--el-bg-color);
+  border-radius: var(--el-border-radius-base);
 
   &__close {
     position: absolute;
     top: var(--spacing-md);
     right: var(--spacing-md);
-    font-size: var(--font-size-base);
-    color: var(--color-text-secondary);
-    transition: color var(--transition-base);
+    font-size: var(--el-font-size-base);
+    color: var(--el-text-color-secondary);
+    transition: color var(--el-transition-duration-fast);
 
     &:hover {
-      color: var(--color-text-primary);
+      color: var(--el-text-color-primary);
     }
   }
 
   &__title {
-    font-size: var(--font-size-lg);
+    font-size: var(--el-font-size-extra-large);
     font-weight: 300;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-text-primary);
+    color: var(--el-text-color-primary);
     margin-bottom: var(--spacing-xl);
   }
 }

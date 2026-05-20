@@ -1,34 +1,15 @@
 :root {
-  // Colors
-  --color-bg: #fafafa;
-  --color-surface: #ffffff;
-  --color-text-primary: #1a1a1a;
-  --color-text-secondary: #757575;
-  --color-border: #e8e8e8;
-  --color-border-focus: #c9a99a;
-  --color-accent: #c9a99a;
-  --color-accent-hover: #b8887a;
-  --color-error: #e53935;
+  // Layout
+  --header-height: 64px;
 
-  // Typography
-  --font-family: 'Inter', sans-serif;
-  --font-size-base: 16px;
-  --font-size-sm: 14px;
-  --font-size-lg: 20px;
+  // Spacing (no Element Plus equivalents)
+  --spacing-xs:   4px;
+  --spacing-sm:   8px;
+  --spacing-md:   16px;
+  --spacing-lg:   24px;
+  --spacing-xl:   40px;
+  --spacing-2xl:  64px;
+
+  // Extra font size (Element Plus max is --el-font-size-extra-large: 20px)
   --font-size-xl: 32px;
-
-  // Spacing
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 40px;
-  --spacing-2xl: 64px;
-
-  // Borders
-  --border-radius: 8px;
-  --border-radius-sm: 4px;
-
-  // Transitions
-  --transition-base: 0.2s ease;
 }

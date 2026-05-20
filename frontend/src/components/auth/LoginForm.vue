@@ -58,8 +58,8 @@ async function handleSubmit() {
   }
 
   &__label {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
+    font-size: var(--el-font-size-small);
+    color: var(--el-text-color-secondary);
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
@@ -67,41 +67,41 @@ async function handleSubmit() {
   &__input {
     width: 100%;
     padding: var(--spacing-md) 0;
-    font-size: var(--font-size-base);
-    color: var(--color-text-primary);
+    font-size: var(--el-font-size-base);
+    color: var(--el-text-color-primary);
     background: transparent;
     border: none;
-    border-bottom: 1px solid var(--color-border);
-    transition: border-color var(--transition-base);
+    border-bottom: 1px solid var(--el-border-color);
+    transition: border-color var(--el-transition-duration-fast);
 
     &::placeholder {
-      color: var(--color-border);
+      color: var(--el-border-color);
     }
 
     &:focus {
-      border-bottom-color: var(--color-accent);
+      border-bottom-color: var(--el-color-primary);
     }
   }
 
   &__error {
-    font-size: var(--font-size-sm);
-    color: var(--color-error);
+    font-size: var(--el-font-size-small);
+    color: var(--el-color-danger);
   }
 
   &__submit {
     width: 100%;
     padding: var(--spacing-md);
-    font-size: var(--font-size-base);
+    font-size: var(--el-font-size-base);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-surface);
-    background: var(--color-accent);
-    border-radius: var(--border-radius-sm);
-    transition: background var(--transition-base);
+    color: var(--el-color-white);
+    background: var(--el-color-primary);
+    border-radius: var(--el-border-radius-base);
+    transition: background var(--el-transition-duration-fast);
     margin-top: var(--spacing-sm);
 
     &:hover:not(:disabled) {
-      background: var(--color-accent-hover);
+      background: var(--el-color-primary-dark-2);
     }
 
     &:disabled {

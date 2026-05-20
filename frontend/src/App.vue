@@ -17,6 +17,7 @@ const showLogin = ref(false)
 
 <style lang="scss" scoped>
 .main {
-  padding: var(--spacing-xl);
+  height: calc(100vh - var(--header-height, 64px));
+  overflow: hidden;
 }
 </style>

@@ -12,10 +12,10 @@ body {
 }
 
 body {
-  font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  color: var(--color-text-primary);
-  background: var(--color-bg);
+  font-family: var(--el-font-family);
+  font-size: var(--el-font-size-base);
+  color: var(--el-text-color-primary);
+  background: var(--el-bg-color-page);
   -webkit-font-smoothing: antialiased;
 }
 
