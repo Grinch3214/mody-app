@@ -27,13 +27,13 @@ export const useGeneralStore = defineStore('general', () => {
 
       const res = await fetch(url, { headers })
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
-      products.value = await res.json() as Product[]
+      products.value = (await res.json()) as Product[]
 
       if (!query.segments?.length) {
-        allSegments.value = [...new Set(products.value.map(p => p.segment))].sort()
+        allSegments.value = [...new Set(products.value.map((p) => p.segment))].sort()
       }
       if (!query.brand) {
-        allBrands.value = [...new Set(products.value.map(p => p.brand))].sort()
+        allBrands.value = [...new Set(products.value.map((p) => p.brand))].sort()
       }
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Unknown error'
@@ -42,5 +42,18 @@ export const useGeneralStore = defineStore('general', () => {
     }
   }
 
-  return { products, allSegments, allBrands, loading, error, fetchProducts }
+  async function fetchOptions() {
+    try {
+      const token = localStorage.getItem('token')
+      const headers: Record<string, string> = {}
+      if (token) headers['Authorization'] = `Bearer ${token}`
+      const res = await fetch(`${API_URL}/sheets`, { headers })
+      if (!res.ok) return
+      const all = (await res.json()) as Product[]
+      allSegments.value = [...new Set(all.map((p) => p.segment))].sort()
+      allBrands.value = [...new Set(all.map((p) => p.brand))].sort()
+    } catch { /* ignore */ }
+  }
+
+  return { products, allSegments, allBrands, loading, error, fetchProducts, fetchOptions }
 })

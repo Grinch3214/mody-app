@@ -22,12 +22,7 @@
         @change="load"
         @clear="load"
       >
-        <el-option
-          v-for="b in store.allBrands"
-          :key="b"
-          :label="b"
-          :value="b"
-        />
+        <el-option v-for="b in store.allBrands" :key="b" :label="b" :value="b" />
       </el-select>
 
       <el-dropdown trigger="click" :hide-on-click="false" @command="toggleSegment">
@@ -43,7 +38,9 @@
               :command="seg"
               class="dropdown-item"
             >
-              <el-icon v-if="selectedSegments.includes(seg)" class="dropdown-item__check"><Check /></el-icon>
+              <el-icon v-if="selectedSegments.includes(seg)" class="dropdown-item__check"
+                ><Check
+              /></el-icon>
               <span v-else class="dropdown-item__spacer" />
               {{ seg }}
             </el-dropdown-item>
@@ -55,6 +52,7 @@
         <el-tag
           v-for="seg in selectedSegments"
           :key="'s-' + seg"
+          size="large"
           closable
           @close="removeSegment(seg)"
         >
@@ -66,15 +64,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ArrowDown, Check } from '@element-plus/icons-vue'
 import { useGeneralStore } from '@/stores/general'
 
 const store = useGeneralStore()
+const route = useRoute()
+const router = useRouter()
 
 const name = ref('')
 const selectedBrand = ref('')
 const selectedSegments = ref<string[]>([])
+
+onMounted(() => {
+  const q = route.query
+  name.value = typeof q.name === 'string' ? q.name : ''
+  selectedBrand.value = typeof q.brand === 'string' ? q.brand : ''
+  selectedSegments.value =
+    typeof q.segment === 'string' && q.segment ? q.segment.split(',').filter(Boolean) : []
+
+  const hasFilters = name.value || selectedBrand.value || selectedSegments.value.length
+  if (hasFilters) {
+    void store.fetchOptions()
+    void store.fetchProducts({
+      name: name.value || undefined,
+      brand: selectedBrand.value || undefined,
+      segments: selectedSegments.value.length ? selectedSegments.value : undefined,
+    })
+  } else {
+    void store.fetchProducts()
+  }
+})
 
 function toggleSegment(seg: string) {
   const idx = selectedSegments.value.indexOf(seg)
@@ -84,7 +105,7 @@ function toggleSegment(seg: string) {
 }
 
 function removeSegment(seg: string) {
-  selectedSegments.value = selectedSegments.value.filter(s => s !== seg)
+  selectedSegments.value = selectedSegments.value.filter((s) => s !== seg)
   load()
 }
 
@@ -92,6 +113,7 @@ function reset() {
   name.value = ''
   selectedBrand.value = ''
   selectedSegments.value = []
+  void router.replace({ query: {} })
   void store.fetchProducts()
 }
 
@@ -100,10 +122,16 @@ let debounceTimer: ReturnType<typeof setTimeout> | null = null
 function load() {
   if (debounceTimer) clearTimeout(debounceTimer)
   debounceTimer = setTimeout(() => {
+    const trimmedName = name.value.trim()
+    const query: Record<string, string> = {}
+    if (trimmedName) query.name = trimmedName
+    if (selectedBrand.value) query.brand = selectedBrand.value
+    if (selectedSegments.value.length) query.segment = selectedSegments.value.join(',')
+    void router.replace({ query })
     void store.fetchProducts({
       segments: selectedSegments.value.length ? selectedSegments.value : undefined,
       brand: selectedBrand.value || undefined,
-      name: name.value || undefined,
+      name: trimmedName || undefined,
     })
   }, 300)
 }
