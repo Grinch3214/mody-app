@@ -3,11 +3,11 @@
     <div class="login-page__container">
       <div class="login-page__header">
         <h1 class="login-page__title">Mody</h1>
-        <p class="login-page__subtitle">Управление каталогом</p>
+        <p class="login-page__subtitle">{{ t('auth.subtitle') }}</p>
       </div>
       <template v-if="auth.isLoggedIn">
-        <p class="login-page__already">Вы уже в системе</p>
-        <el-button @click="router.push('/sheets')">Перейти к каталогу</el-button>
+        <p class="login-page__already">{{ t('auth.alreadyLoggedIn') }}</p>
+        <el-button @click="router.push('/sheets')">{{ t('auth.goToCatalog') }}</el-button>
       </template>
       <LoginForm v-else />
     </div>
@@ -16,10 +16,12 @@
 
 <script setup lang="ts">
 import { watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import LoginForm from '@/components/auth/LoginForm.vue'
 
+const { t } = useI18n()
 const auth = useAuthStore()
 const router = useRouter()
 

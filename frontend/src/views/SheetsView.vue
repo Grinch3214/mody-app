@@ -18,6 +18,7 @@
 
 <script setup lang="ts">
 import { h, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useGeneralStore } from '@/stores/general'
 import { useAuthStore } from '@/stores/auth'
 import SheetFilters from '@/components/sheets/SheetFilters.vue'
@@ -25,12 +26,13 @@ import type { Product, Stock } from '@/types/product'
 
 const store = useGeneralStore()
 const auth = useAuthStore()
+const { t } = useI18n()
 
 // --- helpers ---
 
 function price(val: number | null): string {
   if (val == null) return '—'
-  return val.toLocaleString('uk-UA') + ' грн'
+  return val.toLocaleString('uk-UA') + ' ' + t('units.currency')
 }
 
 function stockBadge(stock: Stock) {
@@ -59,7 +61,7 @@ function stockBadge(stock: Stock) {
         fontWeight: 500,
       },
     },
-    `${stock.bottles} шт`,
+    `${stock.bottles} ${t('units.pcs')}`,
   )
 }
 
@@ -68,82 +70,87 @@ function stockBadge(stock: Stock) {
 type CellProps = { rowData: Product }
 type IndexCellProps = { rowIndex: number }
 
-const baseColumns = [
-  {
-    key: 'index',
-    title: '№',
-    width: 55,
-    align: 'center',
-    cellRenderer: ({ rowIndex }: IndexCellProps) =>
-      h('span', { style: { color: 'var(--el-text-color-placeholder)' } }, rowIndex + 1),
-  },
-  { key: 'segment', dataKey: 'segment', title: 'Категория', width: 150 },
-  { key: 'brand', dataKey: 'brand', title: 'Бренд', width: 130 },
-  { key: 'name', dataKey: 'name', title: 'Название', width: 220, flexGrow: 1 },
-  {
-    key: 'volume',
-    title: 'Объём',
-    width: 90,
-    align: 'center',
-    cellRenderer: ({ rowData }: CellProps) =>
-      h('span', rowData.volume === 1 ? '1 ед.' : `${rowData.volume} мл`),
-  },
-  {
-    key: 'p_full',
-    title: 'Мастерам',
-    width: 120,
-    align: 'right',
-    cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices.full)),
-  },
-  {
-    key: 'p_retail',
-    title: 'Розница',
-    width: 120,
-    align: 'right',
-    cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices.retail)),
-  },
-  {
-    key: 'p_500',
-    title: '500 мл',
-    width: 110,
-    align: 'right',
-    cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices[500])),
-  },
-  {
-    key: 'p_250',
-    title: '250 мл',
-    width: 110,
-    align: 'right',
-    cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices[250])),
-  },
-  {
-    key: 'p_100',
-    title: '100 мл',
-    width: 110,
-    align: 'right',
-    cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices[100])),
-  },
-  {
-    key: 'p_50',
-    title: '50 мл',
-    width: 110,
-    align: 'right',
-    cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices[50])),
-  },
-]
+const columns = computed(() => {
+  const base = [
+    {
+      key: 'index',
+      title: t('columns.index'),
+      width: 55,
+      align: 'center',
+      cellRenderer: ({ rowIndex }: IndexCellProps) =>
+        h('span', { style: { color: 'var(--el-text-color-placeholder)' } }, rowIndex + 1),
+    },
+    { key: 'segment', dataKey: 'segment', title: t('columns.category'), width: 150 },
+    { key: 'brand', dataKey: 'brand', title: t('columns.brand'), width: 130 },
+    { key: 'name', dataKey: 'name', title: t('columns.name'), width: 220, flexGrow: 1 },
+    {
+      key: 'volume',
+      title: t('columns.volume'),
+      width: 90,
+      align: 'center',
+      cellRenderer: ({ rowData }: CellProps) =>
+        h('span', rowData.volume === 1 ? `1 ${t('units.unit')}` : `${rowData.volume} ${t('units.ml')}`),
+    },
+    {
+      key: 'p_full',
+      title: t('columns.priceFull'),
+      width: 120,
+      align: 'right',
+      cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices.full)),
+    },
+    {
+      key: 'p_retail',
+      title: t('columns.priceRetail'),
+      width: 120,
+      align: 'right',
+      cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices.retail)),
+    },
+    {
+      key: 'p_500',
+      title: t('columns.volumeSize', { size: 500 }),
+      width: 110,
+      align: 'right',
+      cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices[500])),
+    },
+    {
+      key: 'p_250',
+      title: t('columns.volumeSize', { size: 250 }),
+      width: 110,
+      align: 'right',
+      cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices[250])),
+    },
+    {
+      key: 'p_100',
+      title: t('columns.volumeSize', { size: 100 }),
+      width: 110,
+      align: 'right',
+      cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices[100])),
+    },
+    {
+      key: 'p_50',
+      title: t('columns.volumeSize', { size: 50 }),
+      width: 110,
+      align: 'right',
+      cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices[50])),
+    },
+  ]
 
-const stockColumn = {
-  key: 'stock',
-  title: 'Остаток',
-  width: 110,
-  align: 'center',
-  cellRenderer: ({ rowData }: CellProps) =>
-    rowData.stock
-      ? stockBadge(rowData.stock)
-      : h('span', { style: { color: 'var(--el-text-color-placeholder)' } }, '—'),
-}
+  if (!auth.isLoggedIn) return base
 
-const columns = computed(() => (auth.isLoggedIn ? [...baseColumns, stockColumn] : baseColumns))
+  return [
+    ...base,
+    {
+      key: 'stock',
+      title: t('columns.stock'),
+      width: 110,
+      align: 'center',
+      cellRenderer: ({ rowData }: CellProps) =>
+        rowData.stock
+          ? stockBadge(rowData.stock)
+          : h('span', { style: { color: 'var(--el-text-color-placeholder)' } }, '—'),
+    },
+  ]
+})
 
 </script>
 

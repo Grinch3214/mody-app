@@ -3,7 +3,7 @@
     <el-form-item>
       <el-input
         v-model="email"
-        placeholder="Email"
+        :placeholder="t('auth.email')"
         autocomplete="email"
         size="large"
       />
@@ -12,7 +12,7 @@
       <el-input
         v-model="password"
         type="password"
-        placeholder="Пароль"
+        :placeholder="t('auth.password')"
         show-password
         autocomplete="current-password"
         size="large"
@@ -26,15 +26,17 @@
       :loading="auth.loading"
       style="width: 100%"
     >
-      Войти
+      {{ t('auth.submit') }}
     </el-button>
   </el-form>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 
+const { t } = useI18n()
 const auth = useAuthStore()
 const email = ref('')
 const password = ref('')

@@ -4,12 +4,12 @@
       <el-input
         v-model="name"
         class="filters__name"
-        placeholder="Поиск по названию"
+        :placeholder="t('filters.searchPlaceholder')"
         clearable
         @input="load"
         @clear="load"
       />
-      <el-button @click="reset">Сбросить</el-button>
+      <el-button @click="reset">{{ t('filters.reset') }}</el-button>
     </div>
 
     <div class="filters__row">
@@ -17,7 +17,7 @@
         v-model="selectedBrand"
         filterable
         clearable
-        placeholder="Бренд"
+        :placeholder="t('filters.brand')"
         style="width: 200px"
         @change="load"
         @clear="load"
@@ -27,7 +27,7 @@
 
       <el-dropdown trigger="click" :hide-on-click="false" @command="toggleSegment">
         <el-button>
-          {{ selectedSegments.length ? `Категория (${selectedSegments.length})` : 'Категория' }}
+          {{ selectedSegments.length ? `${t('filters.category')} (${selectedSegments.length})` : t('filters.category') }}
           <el-icon class="el-icon--right"><ArrowDown /></el-icon>
         </el-button>
         <template #dropdown>
@@ -60,17 +60,19 @@
         </el-tag>
       </div>
 
-      <span class="filters__count">{{ store.products.length }} позиций</span>
+      <span class="filters__count">{{ t('filters.items', { count: store.products.length }) }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowDown, Check } from '@element-plus/icons-vue'
 import { useGeneralStore } from '@/stores/general'
 
+const { t } = useI18n()
 const store = useGeneralStore()
 const route = useRoute()
 const router = useRouter()
