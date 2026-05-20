@@ -1,28 +1,6 @@
 <template>
   <div class="sheets container">
-    <div class="sheets__filters">
-      <el-input
-        v-model="filters.segment"
-        placeholder="Сегмент"
-        clearable
-        @input="load"
-        @clear="load"
-      />
-      <el-input
-        v-model="filters.brand"
-        placeholder="Бренд"
-        clearable
-        @input="load"
-        @clear="load"
-      />
-      <el-input
-        v-model="filters.name"
-        placeholder="Название"
-        clearable
-        @input="load"
-        @clear="load"
-      />
-    </div>
+    <SheetFilters />
 
     <el-auto-resizer class="sheets__table">
       <template #default="{ height, width }">
@@ -39,15 +17,14 @@
 </template>
 
 <script setup lang="ts">
-import { h, reactive, computed, onMounted } from 'vue'
+import { h, computed, onMounted } from 'vue'
 import { useGeneralStore } from '@/stores/general'
 import { useAuthStore } from '@/stores/auth'
+import SheetFilters from '@/components/sheets/SheetFilters.vue'
 import type { Product, Stock } from '@/types/product'
 
 const store = useGeneralStore()
 const auth = useAuthStore()
-
-const filters = reactive({ segment: '', brand: '', name: '' })
 
 // --- helpers ---
 
@@ -80,7 +57,6 @@ function stockBadge(stock: Stock) {
 // --- columns ---
 
 type CellProps = { rowData: Product }
-
 type IndexCellProps = { rowIndex: number }
 
 const baseColumns = [
@@ -134,22 +110,7 @@ const columns = computed(() =>
   auth.isLoggedIn ? [...baseColumns, stockColumn] : baseColumns,
 )
 
-// --- debounce ---
-
-let debounceTimer: ReturnType<typeof setTimeout> | null = null
-
-function load() {
-  if (debounceTimer) clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(() => {
-    void store.fetchProducts({
-      segment: filters.segment || undefined,
-      brand: filters.brand || undefined,
-      name: filters.name || undefined,
-    })
-  }, 300)
-}
-
-onMounted(load)
+onMounted(() => store.fetchProducts())
 </script>
 
 <style lang="scss" scoped>
@@ -159,12 +120,6 @@ onMounted(load)
   height: calc(100vh - var(--header-height, 64px));
   padding-block: var(--spacing-lg);
   gap: var(--spacing-md);
-
-  &__filters {
-    display: flex;
-    gap: var(--spacing-md);
-    flex-shrink: 0;
-  }
 
   &__table {
     flex: 1;

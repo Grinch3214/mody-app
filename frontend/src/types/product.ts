@@ -23,7 +23,7 @@ export interface Product {
 }
 
 export interface FilterQuery {
-  segment?: string
+  segments?: string[]
   brand?: string
   name?: string
 }

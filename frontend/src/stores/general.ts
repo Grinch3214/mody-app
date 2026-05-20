@@ -6,6 +6,8 @@ const API_URL = import.meta.env.VITE_API_URL
 
 export const useGeneralStore = defineStore('general', () => {
   const products = ref<Product[]>([])
+  const allSegments = ref<string[]>([])
+  const allBrands = ref<string[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -14,7 +16,7 @@ export const useGeneralStore = defineStore('general', () => {
     error.value = null
     try {
       const params = new URLSearchParams()
-      if (query.segment) params.set('segment', query.segment)
+      if (query.segments?.length) params.set('segment', query.segments.join(','))
       if (query.brand) params.set('brand', query.brand)
       if (query.name) params.set('name', query.name)
 
@@ -26,6 +28,13 @@ export const useGeneralStore = defineStore('general', () => {
       const res = await fetch(url, { headers })
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
       products.value = await res.json() as Product[]
+
+      if (!query.segments?.length) {
+        allSegments.value = [...new Set(products.value.map(p => p.segment))].sort()
+      }
+      if (!query.brand) {
+        allBrands.value = [...new Set(products.value.map(p => p.brand))].sort()
+      }
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Unknown error'
     } finally {
@@ -33,5 +42,5 @@ export const useGeneralStore = defineStore('general', () => {
     }
   }
 
-  return { products, loading, error, fetchProducts }
+  return { products, allSegments, allBrands, loading, error, fetchProducts }
 })
