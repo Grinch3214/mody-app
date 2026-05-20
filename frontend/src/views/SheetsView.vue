@@ -150,12 +150,24 @@ const columns = computed(() => (auth.isLoggedIn ? [...baseColumns, stockColumn] 
 .sheets {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - var(--header-height, 64px));
+  height: calc(100vh - var(--header-height, 64px) - var(--footer-height, 72px));
   padding-block: var(--spacing-lg);
   gap: var(--spacing-md);
 
   &__table {
     flex: 1;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background: linear-gradient(to bottom, transparent, var(--el-bg-color));
+      pointer-events: none;
+    }
   }
 
   :deep(.el-table-v2__empty) {
