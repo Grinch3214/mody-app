@@ -9,10 +9,7 @@
         inline-prompt
         @change="toggle"
       />
-      <button v-if="!auth.isLoggedIn" class="header__btn" @click="emit('open-login')">
-        Войти
-      </button>
-      <button v-else class="header__btn header__btn--logout" @click="auth.logout()">
+      <button v-if="auth.isLoggedIn" class="header__btn header__btn--logout" @click="auth.logout()">
         Выйти
       </button>
     </div>
@@ -25,7 +22,6 @@ import { useAuthStore } from '@/stores/auth'
 import { useTheme } from '@/composables/useTheme'
 
 const auth = useAuthStore()
-const emit = defineEmits<{ 'open-login': [] }>()
 const { isDark, toggle } = useTheme()
 </script>
 

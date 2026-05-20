@@ -32,7 +32,7 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: 100%;
   background: var(--el-bg-color-page);
 
   &__container {
