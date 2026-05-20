@@ -85,7 +85,8 @@ const baseColumns = [
     title: 'Объём',
     width: 90,
     align: 'center',
-    cellRenderer: ({ rowData }: CellProps) => h('span', `${rowData.volume} мл`),
+    cellRenderer: ({ rowData }: CellProps) =>
+      h('span', rowData.volume === 1 ? '1 ед.' : `${rowData.volume} мл`),
   },
   {
     key: 'p_full',
