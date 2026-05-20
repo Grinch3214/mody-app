@@ -1,5 +1,6 @@
 export interface ProductPrices {
   full: number | null;
+  retail: number | null;
   500: number | null;
   250: number | null;
   100: number | null;

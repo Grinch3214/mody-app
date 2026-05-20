@@ -7,15 +7,21 @@ import { FilterQueryDto } from './filter.dto';
 export class FilterService {
   constructor(private readonly sheetsService: SheetsService) {}
 
+  private static readonly HIDDEN_SEGMENTS = ['тест', 'подарунки'];
+
   async filter(query: FilterQueryDto, withStock = false): Promise<Product[]> {
     const products = await this.sheetsService.getData();
     const filters = this.buildFilters(query);
 
-    const result = filters.length
+    let result = filters.length
       ? products.filter((p) => filters.every((fn) => fn(p)))
       : products;
 
     if (withStock) return result;
+
+    result = result.filter(
+      (p) => !FilterService.HIDDEN_SEGMENTS.some((s) => p.segment.toLowerCase().includes(s)),
+    );
 
     return result.map((p) => ({ ...p, stock: null }));
   }

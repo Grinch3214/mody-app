@@ -148,6 +148,8 @@ export class SheetsService implements OnModuleInit, OnModuleDestroy {
     const name = get('Назва') || get('Название');
     if (!name || !segment) return null;
 
+    const isRetail = segment.toLowerCase().includes('уход');
+
     return {
       segment,
       brand: get('Бренд'),
@@ -155,6 +157,7 @@ export class SheetsService implements OnModuleInit, OnModuleDestroy {
       volume: this.parseVolume(get('Обʼєм') || get('Объём')),
       prices: {
         full: toPrice('Ціни дівчат РРЦ'),
+        retail: isRetail ? toPrice('Ціни сайтів РРЦ') : null,
         500: toPrice('Ціни дівчат 500'),
         250: toPrice('Ціни дівчат 250'),
         100: toPrice('Ціни дівчат 100'),

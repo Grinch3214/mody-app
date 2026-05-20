@@ -97,8 +97,12 @@ const baseColumns = [
     cellRenderer: ({ rowData }: CellProps) => h('span', `${rowData.volume} мл`),
   },
   {
-    key: 'p_full', title: 'Полный', width: 120, align: 'right',
+    key: 'p_full', title: 'Мастерам', width: 120, align: 'right',
     cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices.full)),
+  },
+  {
+    key: 'p_retail', title: 'Розница', width: 120, align: 'right',
+    cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices.retail)),
   },
   {
     key: 'p_500', title: '500 мл', width: 110, align: 'right',
