@@ -32,6 +32,8 @@ export default {
     email: 'Email',
     password: 'Password',
     submit: 'Log in',
+    errorTitle: 'Login failed',
+    errorMessage: 'Invalid email or password',
   },
   footer: {
     copy: '© Made with love',

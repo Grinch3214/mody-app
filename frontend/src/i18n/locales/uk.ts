@@ -32,6 +32,8 @@ export default {
     email: 'Email',
     password: 'Пароль',
     submit: 'Увійти',
+    errorTitle: 'Помилка входу',
+    errorMessage: 'Невірний email або пароль',
   },
   footer: {
     copy: '© Зроблено з любовʼю',

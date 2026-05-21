@@ -13,7 +13,6 @@
         size="large"
       />
     </el-form-item>
-    <p v-if="auth.error" class="login-form__error">{{ auth.error }}</p>
     <el-button
       type="primary"
       native-type="submit"
@@ -28,6 +27,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 
@@ -38,7 +38,15 @@ const email = ref('')
 const password = ref('')
 
 async function handleSubmit() {
-  await auth.login({ email: email.value, password: password.value })
+  const success = await auth.login({ email: email.value, password: password.value })
+  if (!success) {
+    ElNotification({
+      title: t('auth.errorTitle'),
+      message: t('auth.errorMessage'),
+      type: 'error',
+      duration: 4000,
+    })
+  }
 }
 </script>
 
@@ -47,11 +55,5 @@ async function handleSubmit() {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
-
-  &__error {
-    font-size: var(--el-font-size-small);
-    color: var(--el-color-danger);
-    margin-top: calc(var(--spacing-xs) * -1);
-  }
 }
 </style>

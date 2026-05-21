@@ -2,7 +2,7 @@
   <div class="login-page">
     <div class="login-page__container">
       <div class="login-page__header">
-        <h1 class="login-page__title">Mody</h1>
+        <h1 class="login-page__title">AnnGr</h1>
         <p class="login-page__subtitle">{{ t('auth.subtitle') }}</p>
       </div>
       <template v-if="auth.isLoggedIn">
@@ -49,7 +49,7 @@ watch(
     padding: var(--spacing-xl) var(--spacing-md);
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-2xl);
+    gap: var(--spacing-xl);
   }
 
   &__header {

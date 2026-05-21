@@ -12,7 +12,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isLoggedIn = computed(() => !!token.value)
 
-  async function login(credentials: LoginRequest) {
+  async function login(credentials: LoginRequest): Promise<boolean> {
     loading.value = true
     error.value = null
     try {
@@ -25,8 +25,10 @@ export const useAuthStore = defineStore('auth', () => {
       const data = (await res.json()) as LoginResponse
       token.value = data.access_token
       localStorage.setItem('token', data.access_token)
+      return true
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Unknown error'
+      return false
     } finally {
       loading.value = false
     }
