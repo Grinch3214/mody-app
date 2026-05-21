@@ -40,6 +40,11 @@ export default {
     errorTitle: 'Ошибка входа',
     errorMessage: 'Неверный email или пароль',
   },
+  notFound: {
+    title: 'Страница не найдена',
+    message: 'Похоже, здесь ничего нет',
+    back: 'На главную',
+  },
   footer: {
     copy: '© Сделано с любовью',
   },

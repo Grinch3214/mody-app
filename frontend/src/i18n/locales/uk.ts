@@ -40,6 +40,11 @@ export default {
     errorTitle: 'Помилка входу',
     errorMessage: 'Невірний email або пароль',
   },
+  notFound: {
+    title: 'Сторінку не знайдено',
+    message: 'Схоже, тут нічого немає',
+    back: 'На головну',
+  },
   footer: {
     copy: '© Зроблено з любовʼю',
   },

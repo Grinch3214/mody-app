@@ -40,6 +40,11 @@ export default {
     errorTitle: 'Login failed',
     errorMessage: 'Invalid email or password',
   },
+  notFound: {
+    title: 'Page not found',
+    message: "Looks like there's nothing here",
+    back: 'Go home',
+  },
   footer: {
     copy: '© Made with love',
   },
