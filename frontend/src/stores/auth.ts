@@ -22,7 +22,7 @@ export const useAuthStore = defineStore('auth', () => {
         body: JSON.stringify(credentials),
       })
       if (!res.ok) throw new Error('Неверный email или пароль')
-      const data = await res.json() as LoginResponse
+      const data = (await res.json()) as LoginResponse
       token.value = data.access_token
       localStorage.setItem('token', data.access_token)
     } catch (e) {

@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <span class="header__logo">Mody</span>
+    <span class="header__logo">AnnGr</span>
     <div class="header__actions">
       <el-select v-model="currentLocale" size="small" style="width: 72px" @change="onLocaleChange">
         <el-option v-for="l in locales" :key="l.value" :label="l.label" :value="l.value" />

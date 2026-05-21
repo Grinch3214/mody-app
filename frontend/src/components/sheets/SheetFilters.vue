@@ -84,7 +84,7 @@
           @clear="load"
         />
         <el-badge :value="activeFiltersCount" :hidden="activeFiltersCount === 0">
-          <el-button @click="drawerOpen = true">
+          <el-button class="filters__open-btn" @click="drawerOpen = true">
             <el-icon><Filter /></el-icon>
             {{ t('filters.title') }}
           </el-button>
@@ -118,7 +118,7 @@
         style="width: 100%"
         @command="toggleSegment"
       >
-        <el-button style="width: 100%; justify-content: space-between">
+        <el-button class="filters__category-btn">
           {{
             selectedSegments.length
               ? `${t('filters.category')} (${selectedSegments.length})`
@@ -171,10 +171,12 @@ import { ArrowDown, Check, Filter } from '@element-plus/icons-vue'
 import { useGeneralStore } from '@/stores/general'
 import { useBreakpoint } from '@/composables/useBreakpoint'
 
-const { t } = useI18n()
-const store = useGeneralStore()
 const route = useRoute()
 const router = useRouter()
+
+const store = useGeneralStore()
+
+const { t } = useI18n()
 const { isMobile } = useBreakpoint()
 
 const name = ref('')
@@ -185,26 +187,6 @@ const drawerOpen = ref(false)
 const activeFiltersCount = computed(
   () => (selectedBrand.value ? 1 : 0) + selectedSegments.value.length,
 )
-
-onMounted(() => {
-  const q = route.query
-  name.value = typeof q.name === 'string' ? q.name : ''
-  selectedBrand.value = typeof q.brand === 'string' ? q.brand : ''
-  selectedSegments.value =
-    typeof q.segment === 'string' && q.segment ? q.segment.split(',').filter(Boolean) : []
-
-  const hasFilters = name.value || selectedBrand.value || selectedSegments.value.length
-  if (hasFilters) {
-    void store.fetchOptions()
-    void store.fetchProducts({
-      name: name.value || undefined,
-      brand: selectedBrand.value || undefined,
-      segments: selectedSegments.value.length ? selectedSegments.value : undefined,
-    })
-  } else {
-    void store.fetchProducts()
-  }
-})
 
 function toggleSegment(seg: string) {
   const idx = selectedSegments.value.indexOf(seg)
@@ -249,6 +231,26 @@ function load() {
     })
   }, 300)
 }
+
+onMounted(() => {
+  const q = route.query
+  name.value = typeof q.name === 'string' ? q.name : ''
+  selectedBrand.value = typeof q.brand === 'string' ? q.brand : ''
+  selectedSegments.value =
+    typeof q.segment === 'string' && q.segment ? q.segment.split(',').filter(Boolean) : []
+
+  const hasFilters = name.value || selectedBrand.value || selectedSegments.value.length
+  if (hasFilters) {
+    void store.fetchOptions()
+    void store.fetchProducts({
+      name: name.value || undefined,
+      brand: selectedBrand.value || undefined,
+      segments: selectedSegments.value.length ? selectedSegments.value : undefined,
+    })
+  } else {
+    void store.fetchProducts()
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -291,6 +293,23 @@ function load() {
     flex-direction: column;
     gap: var(--spacing-md);
     padding-bottom: var(--spacing-lg);
+  }
+
+  &__open-btn {
+    :deep(span) {
+      gap: var(--spacing-xs);
+    }
+  }
+
+  &__category-btn {
+    width: 100%;
+    padding: 4px 12px;
+    color: var(--el-text-color-placeholder);
+
+    :deep(span) {
+      width: 100%;
+      justify-content: space-between;
+    }
   }
 }
 

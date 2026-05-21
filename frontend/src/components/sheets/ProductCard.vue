@@ -32,8 +32,9 @@ import type { Product } from '@/types/product'
 
 const props = defineProps<{ product: Product }>()
 
-const { t } = useI18n()
 const auth = useAuthStore()
+
+const { t } = useI18n()
 
 function formatPrice(val: number | null): string {
   if (val == null) return '—'

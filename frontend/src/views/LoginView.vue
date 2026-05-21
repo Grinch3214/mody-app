@@ -21,9 +21,11 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import LoginForm from '@/components/auth/LoginForm.vue'
 
-const { t } = useI18n()
-const auth = useAuthStore()
 const router = useRouter()
+
+const auth = useAuthStore()
+
+const { t } = useI18n()
 
 watch(
   () => auth.isLoggedIn,

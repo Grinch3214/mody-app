@@ -1,12 +1,7 @@
 <template>
   <el-form class="login-form" @submit.prevent="handleSubmit">
     <el-form-item>
-      <el-input
-        v-model="email"
-        :placeholder="t('auth.email')"
-        autocomplete="email"
-        size="large"
-      />
+      <el-input v-model="email" :placeholder="t('auth.email')" autocomplete="email" size="large" />
     </el-form-item>
     <el-form-item>
       <el-input
@@ -36,8 +31,9 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 
-const { t } = useI18n()
 const auth = useAuthStore()
+
+const { t } = useI18n()
 const email = ref('')
 const password = ref('')
 

@@ -52,7 +52,9 @@ export const useGeneralStore = defineStore('general', () => {
       const all = (await res.json()) as Product[]
       allSegments.value = [...new Set(all.map((p) => p.segment))].sort()
       allBrands.value = [...new Set(all.map((p) => p.brand))].sort()
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   return { products, allSegments, allBrands, loading, error, fetchProducts, fetchOptions }
