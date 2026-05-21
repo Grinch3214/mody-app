@@ -51,7 +51,7 @@ function onLocaleChange(val: Locale) {
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-md) var(--spacing-xl);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--el-border-color-lighter);
   background: var(--el-bg-color);
 
   &__logo {

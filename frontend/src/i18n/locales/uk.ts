@@ -4,6 +4,9 @@ export default {
     brand: 'Бренд',
     category: 'Категорія',
     reset: 'Скинути',
+    refreshDb: 'Оновити БД',
+    refreshSuccess: 'Дані оновлено',
+    refreshError: 'Помилка оновлення',
     items: '{count} позицій',
     title: 'Фільтри',
   },
@@ -17,6 +20,8 @@ export default {
     priceRetail: 'Роздріб',
     volumeSize: '{size} мл',
     stock: 'Залишок',
+    splitPrice: 'Розлив',
+    onRequest: 'За запитом',
   },
   units: {
     ml: 'мл',
@@ -32,6 +37,13 @@ export default {
     email: 'Email',
     password: 'Пароль',
     submit: 'Увійти',
+    errorTitle: 'Помилка входу',
+    errorMessage: 'Невірний email або пароль',
+  },
+  notFound: {
+    title: 'Сторінку не знайдено',
+    message: 'Схоже, тут нічого немає',
+    back: 'На головну',
   },
   footer: {
     copy: '© Зроблено з любовʼю',

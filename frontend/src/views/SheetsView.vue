@@ -11,6 +11,7 @@
           :data="store.products"
           :width="width"
           :height="height"
+          :row-height="60"
         />
       </template>
     </el-auto-resizer>
@@ -26,6 +27,7 @@
 
 <script setup lang="ts">
 import { h, computed } from 'vue'
+import { ElTag } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { useGeneralStore } from '@/stores/general'
 import { useAuthStore } from '@/stores/auth'
@@ -91,9 +93,30 @@ const columns = computed(() => {
       cellRenderer: ({ rowIndex }: IndexCellProps) =>
         h('span', { style: { color: 'var(--el-text-color-placeholder)' } }, rowIndex + 1),
     },
-    { key: 'segment', dataKey: 'segment', title: t('columns.category'), width: 150 },
-    { key: 'brand', dataKey: 'brand', title: t('columns.brand'), width: 130 },
-    { key: 'name', dataKey: 'name', title: t('columns.name'), width: 220, flexGrow: 1 },
+    { key: 'segment', dataKey: 'segment', title: t('columns.category'), width: 130 },
+    { key: 'brand', dataKey: 'brand', title: t('columns.brand'), width: 120 },
+    {
+      key: 'name',
+      title: t('columns.name'),
+      width: 220,
+      flexGrow: 1,
+      cellRenderer: ({ rowData }: CellProps) =>
+        h(
+          'span',
+          {
+            style: {
+              whiteSpace: 'normal',
+              wordBreak: 'break-word',
+              lineHeight: '1.4',
+              display: '-webkit-box',
+              WebkitLineClamp: '2',
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            },
+          },
+          rowData.name,
+        ),
+    },
     {
       key: 'volume',
       title: t('columns.volume'),
@@ -108,44 +131,35 @@ const columns = computed(() => {
     {
       key: 'p_full',
       title: t('columns.priceFull'),
-      width: 120,
+      width: 110,
       align: 'right',
       cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices.full)),
     },
     {
       key: 'p_retail',
       title: t('columns.priceRetail'),
-      width: 120,
+      width: 110,
       align: 'right',
       cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices.retail)),
     },
     {
-      key: 'p_500',
-      title: t('columns.volumeSize', { size: 500 }),
-      width: 110,
-      align: 'right',
-      cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices[500])),
-    },
-    {
-      key: 'p_250',
-      title: t('columns.volumeSize', { size: 250 }),
-      width: 110,
-      align: 'right',
-      cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices[250])),
-    },
-    {
-      key: 'p_100',
-      title: t('columns.volumeSize', { size: 100 }),
-      width: 110,
-      align: 'right',
-      cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices[100])),
-    },
-    {
-      key: 'p_50',
-      title: t('columns.volumeSize', { size: 50 }),
-      width: 110,
-      align: 'right',
-      cellRenderer: ({ rowData }: CellProps) => h('span', price(rowData.prices[50])),
+      key: 'split',
+      title: t('columns.splitPrice'),
+      width: 130,
+      align: 'center',
+      cellRenderer: ({ rowData }: CellProps) => {
+        if (!rowData.segment.toLowerCase().includes('состав')) {
+          return h('span', { style: { color: 'var(--el-text-color-placeholder)' } }, '—')
+        }
+        return h(
+          'div',
+          { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' } },
+          [
+            h(ElTag, { type: 'info', size: 'small' }, () => t('columns.onRequest')),
+            h('span', { style: { fontSize: '11px', color: 'var(--el-text-color-secondary)' } }, '500 · 250 · 100 · 50'),
+          ],
+        )
+      },
     },
   ]
 

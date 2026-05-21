@@ -4,6 +4,9 @@ export default {
     brand: 'Бренд',
     category: 'Категория',
     reset: 'Сбросить',
+    refreshDb: 'Обновить БД',
+    refreshSuccess: 'Данные обновлены',
+    refreshError: 'Ошибка обновления',
     items: '{count} позиций',
     title: 'Фильтры',
   },
@@ -17,6 +20,8 @@ export default {
     priceRetail: 'Розница',
     volumeSize: '{size} мл',
     stock: 'Остаток',
+    splitPrice: 'Разлив',
+    onRequest: 'По запросу',
   },
   units: {
     ml: 'мл',
@@ -32,6 +37,13 @@ export default {
     email: 'Email',
     password: 'Пароль',
     submit: 'Войти',
+    errorTitle: 'Ошибка входа',
+    errorMessage: 'Неверный email или пароль',
+  },
+  notFound: {
+    title: 'Страница не найдена',
+    message: 'Похоже, здесь ничего нет',
+    back: 'На главную',
   },
   footer: {
     copy: '© Сделано с любовью',

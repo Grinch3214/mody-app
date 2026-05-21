@@ -4,6 +4,9 @@ export default {
     brand: 'Brand',
     category: 'Category',
     reset: 'Reset',
+    refreshDb: 'Refresh DB',
+    refreshSuccess: 'Data updated',
+    refreshError: 'Update failed',
     items: '{count} items',
     title: 'Filters',
   },
@@ -17,6 +20,8 @@ export default {
     priceRetail: 'Retail',
     volumeSize: '{size} ml',
     stock: 'Stock',
+    splitPrice: 'Split',
+    onRequest: 'On request',
   },
   units: {
     ml: 'ml',
@@ -32,6 +37,13 @@ export default {
     email: 'Email',
     password: 'Password',
     submit: 'Log in',
+    errorTitle: 'Login failed',
+    errorMessage: 'Invalid email or password',
+  },
+  notFound: {
+    title: 'Page not found',
+    message: "Looks like there's nothing here",
+    back: 'Go home',
   },
   footer: {
     copy: '© Made with love',

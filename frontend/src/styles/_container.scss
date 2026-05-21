@@ -1,11 +1,7 @@
 .container {
   width: 100%;
-  padding-inline: var(--spacing-xl);
+  padding-inline: var(--spacing-md);
   margin-inline: auto;
-
-  @media (width >= 1280px) {
-    max-width: 1280px;
-  }
 
   @media (width >= 1900px) {
     max-width: 1900px;

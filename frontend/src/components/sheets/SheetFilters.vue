@@ -12,6 +12,14 @@
           @clear="load"
         />
         <el-button @click="reset">{{ t('filters.reset') }}</el-button>
+        <el-button
+          v-if="auth.isLoggedIn"
+          class="filters__refresh-btn"
+          :loading="store.refreshing"
+          :icon="Refresh"
+          @click="handleRefresh"
+          >{{ t('filters.refreshDb') }}</el-button
+        >
       </div>
 
       <div class="filters__row">
@@ -28,7 +36,7 @@
         </el-select>
 
         <el-dropdown trigger="click" :hide-on-click="false" @command="toggleSegment">
-          <el-button>
+          <el-button :disabled="!store.allSegments.length">
             {{
               selectedSegments.length
                 ? `${t('filters.category')} (${selectedSegments.length})`
@@ -118,7 +126,7 @@
         style="width: 100%"
         @command="toggleSegment"
       >
-        <el-button class="filters__category-btn">
+        <el-button class="filters__category-btn" :disabled="!store.allSegments.length">
           {{
             selectedSegments.length
               ? `${t('filters.category')} (${selectedSegments.length})`
@@ -159,22 +167,33 @@
       <el-button style="width: 100%" @click="resetAndClose">
         {{ t('filters.reset') }}
       </el-button>
+      <el-button
+        v-if="auth.isLoggedIn"
+        style="width: 100%"
+        :loading="store.refreshing"
+        :icon="Refresh"
+        @click="handleRefresh"
+        >{{ t('filters.refreshDb') }}</el-button
+      >
     </div>
   </el-drawer>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { ArrowDown, Check, Filter } from '@element-plus/icons-vue'
+import { ArrowDown, Check, Filter, Refresh } from '@element-plus/icons-vue'
 import { useGeneralStore } from '@/stores/general'
+import { useAuthStore } from '@/stores/auth'
 import { useBreakpoint } from '@/composables/useBreakpoint'
 
 const route = useRoute()
 const router = useRouter()
 
 const store = useGeneralStore()
+const auth = useAuthStore()
 
 const { t } = useI18n()
 const { isMobile } = useBreakpoint()
@@ -211,6 +230,15 @@ function reset() {
 function resetAndClose() {
   reset()
   drawerOpen.value = false
+}
+
+async function handleRefresh() {
+  const success = await store.refreshProducts()
+  ElNotification({
+    title: success ? t('filters.refreshSuccess') : t('filters.refreshError'),
+    type: success ? 'success' : 'error',
+    duration: 3000,
+  })
 }
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
@@ -275,6 +303,10 @@ onMounted(() => {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-sm);
+
+    &:empty {
+      display: none;
+    }
   }
 
   &__count {
@@ -293,6 +325,10 @@ onMounted(() => {
     flex-direction: column;
     gap: var(--spacing-md);
     padding-bottom: var(--spacing-lg);
+  }
+
+  &__refresh-btn {
+    margin-left: auto;
   }
 
   &__open-btn {

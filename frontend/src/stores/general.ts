@@ -9,6 +9,7 @@ export const useGeneralStore = defineStore('general', () => {
   const allSegments = ref<string[]>([])
   const allBrands = ref<string[]>([])
   const loading = ref(false)
+  const refreshing = ref(false)
   const error = ref<string | null>(null)
 
   async function fetchProducts(query: FilterQuery = {}) {
@@ -57,5 +58,23 @@ export const useGeneralStore = defineStore('general', () => {
     }
   }
 
-  return { products, allSegments, allBrands, loading, error, fetchProducts, fetchOptions }
+  async function refreshProducts(): Promise<boolean> {
+    refreshing.value = true
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_URL}/sheets/refresh`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error()
+      await fetchProducts()
+      return true
+    } catch {
+      return false
+    } finally {
+      refreshing.value = false
+    }
+  }
+
+  return { products, allSegments, allBrands, loading, refreshing, error, fetchProducts, fetchOptions, refreshProducts }
 })
