@@ -20,6 +20,8 @@ export default {
     priceRetail: 'Розница',
     volumeSize: '{size} мл',
     stock: 'Остаток',
+    splitPrice: 'Разлив',
+    onRequest: 'По запросу',
   },
   units: {
     ml: 'мл',

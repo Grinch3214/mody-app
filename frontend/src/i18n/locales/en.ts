@@ -20,6 +20,8 @@ export default {
     priceRetail: 'Retail',
     volumeSize: '{size} ml',
     stock: 'Stock',
+    splitPrice: 'Split',
+    onRequest: 'On request',
   },
   units: {
     ml: 'ml',
