@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <span class="header__logo">AnnGr</span>
+    <RouterLink to="/" class="header__logo">AnnGr</RouterLink>
     <div class="header__actions">
       <el-select v-model="currentLocale" size="small" style="width: 72px" @change="onLocaleChange">
         <el-option v-for="l in locales" :key="l.value" :label="l.label" :value="l.value" />
@@ -21,6 +21,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Moon, Sunny } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
@@ -59,6 +60,7 @@ function onLocaleChange(val: Locale) {
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--el-text-color-primary);
+    text-decoration: none;
   }
 
   &__actions {
