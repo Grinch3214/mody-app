@@ -5,6 +5,7 @@ export default {
     category: 'Категорія',
     reset: 'Скинути',
     items: '{count} позицій',
+    title: 'Фільтри',
   },
   columns: {
     index: '№',

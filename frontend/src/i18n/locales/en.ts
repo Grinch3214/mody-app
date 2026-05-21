@@ -5,6 +5,7 @@ export default {
     category: 'Category',
     reset: 'Reset',
     items: '{count} items',
+    title: 'Filters',
   },
   columns: {
     index: '#',

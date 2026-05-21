@@ -5,6 +5,7 @@ export default {
     category: 'Категория',
     reset: 'Сбросить',
     items: '{count} позиций',
+    title: 'Фильтры',
   },
   columns: {
     index: '№',

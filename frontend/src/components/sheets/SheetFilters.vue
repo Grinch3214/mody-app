@@ -1,33 +1,129 @@
 <template>
   <div class="filters">
-    <div class="filters__row">
-      <el-input
-        v-model="name"
-        class="filters__name"
-        :placeholder="t('filters.searchPlaceholder')"
-        clearable
-        @input="load"
-        @clear="load"
-      />
-      <el-button @click="reset">{{ t('filters.reset') }}</el-button>
-    </div>
+    <!-- Desktop -->
+    <template v-if="!isMobile">
+      <div class="filters__row">
+        <el-input
+          v-model="name"
+          class="filters__name"
+          :placeholder="t('filters.searchPlaceholder')"
+          clearable
+          @input="load"
+          @clear="load"
+        />
+        <el-button @click="reset">{{ t('filters.reset') }}</el-button>
+      </div>
 
-    <div class="filters__row">
+      <div class="filters__row">
+        <el-select
+          v-model="selectedBrand"
+          filterable
+          clearable
+          :placeholder="t('filters.brand')"
+          style="width: 200px"
+          @change="load"
+          @clear="load"
+        >
+          <el-option v-for="b in store.allBrands" :key="b" :label="b" :value="b" />
+        </el-select>
+
+        <el-dropdown trigger="click" :hide-on-click="false" @command="toggleSegment">
+          <el-button>
+            {{
+              selectedSegments.length
+                ? `${t('filters.category')} (${selectedSegments.length})`
+                : t('filters.category')
+            }}
+            <el-icon class="el-icon--right"><ArrowDown /></el-icon>
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                v-for="seg in store.allSegments"
+                :key="seg"
+                :command="seg"
+                class="dropdown-item"
+              >
+                <el-icon v-if="selectedSegments.includes(seg)" class="dropdown-item__check"
+                  ><Check
+                /></el-icon>
+                <span v-else class="dropdown-item__spacer" />
+                {{ seg }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+
+        <div class="filters__tags">
+          <el-tag
+            v-for="seg in selectedSegments"
+            :key="'s-' + seg"
+            size="large"
+            closable
+            @close="removeSegment(seg)"
+          >
+            {{ seg }}
+          </el-tag>
+        </div>
+
+        <span class="filters__count">{{
+          t('filters.items', { count: store.products.length })
+        }}</span>
+      </div>
+    </template>
+
+    <!-- Mobile -->
+    <template v-else>
+      <div class="filters__row">
+        <el-input
+          v-model="name"
+          class="filters__name"
+          :placeholder="t('filters.searchPlaceholder')"
+          clearable
+          @input="load"
+          @clear="load"
+        />
+        <el-badge :value="activeFiltersCount" :hidden="activeFiltersCount === 0">
+          <el-button @click="drawerOpen = true">
+            <el-icon><Filter /></el-icon>
+            {{ t('filters.title') }}
+          </el-button>
+        </el-badge>
+        <el-button v-if="activeFiltersCount > 0" @click="reset">{{ t('filters.reset') }}</el-button>
+      </div>
+      <span class="filters__count filters__count--mobile">
+        {{ t('filters.items', { count: store.products.length }) }}
+      </span>
+    </template>
+  </div>
+
+  <!-- Drawer (mobile filters) -->
+  <el-drawer v-model="drawerOpen" direction="btt" size="auto" :title="t('filters.title')">
+    <div class="filters__drawer">
       <el-select
         v-model="selectedBrand"
         filterable
         clearable
         :placeholder="t('filters.brand')"
-        style="width: 200px"
+        style="width: 100%"
         @change="load"
         @clear="load"
       >
         <el-option v-for="b in store.allBrands" :key="b" :label="b" :value="b" />
       </el-select>
 
-      <el-dropdown trigger="click" :hide-on-click="false" @command="toggleSegment">
-        <el-button>
-          {{ selectedSegments.length ? `${t('filters.category')} (${selectedSegments.length})` : t('filters.category') }}
+      <el-dropdown
+        trigger="click"
+        :hide-on-click="false"
+        style="width: 100%"
+        @command="toggleSegment"
+      >
+        <el-button style="width: 100%; justify-content: space-between">
+          {{
+            selectedSegments.length
+              ? `${t('filters.category')} (${selectedSegments.length})`
+              : t('filters.category')
+          }}
           <el-icon class="el-icon--right"><ArrowDown /></el-icon>
         </el-button>
         <template #dropdown>
@@ -48,7 +144,7 @@
         </template>
       </el-dropdown>
 
-      <div class="filters__tags">
+      <div v-if="selectedSegments.length" class="filters__tags">
         <el-tag
           v-for="seg in selectedSegments"
           :key="'s-' + seg"
@@ -60,26 +156,35 @@
         </el-tag>
       </div>
 
-      <span class="filters__count">{{ t('filters.items', { count: store.products.length }) }}</span>
+      <el-button style="width: 100%" @click="resetAndClose">
+        {{ t('filters.reset') }}
+      </el-button>
     </div>
-  </div>
+  </el-drawer>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { ArrowDown, Check } from '@element-plus/icons-vue'
+import { ArrowDown, Check, Filter } from '@element-plus/icons-vue'
 import { useGeneralStore } from '@/stores/general'
+import { useBreakpoint } from '@/composables/useBreakpoint'
 
 const { t } = useI18n()
 const store = useGeneralStore()
 const route = useRoute()
 const router = useRouter()
+const { isMobile } = useBreakpoint()
 
 const name = ref('')
 const selectedBrand = ref('')
 const selectedSegments = ref<string[]>([])
+const drawerOpen = ref(false)
+
+const activeFiltersCount = computed(
+  () => (selectedBrand.value ? 1 : 0) + selectedSegments.value.length,
+)
 
 onMounted(() => {
   const q = route.query
@@ -121,6 +226,11 @@ function reset() {
   void store.fetchProducts()
 }
 
+function resetAndClose() {
+  reset()
+  drawerOpen.value = false
+}
+
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
 function load() {
@@ -156,6 +266,7 @@ function load() {
 
   &__name {
     max-width: 300px;
+    flex: 1;
   }
 
   &__tags {
@@ -169,6 +280,17 @@ function load() {
     font-size: var(--el-font-size-small);
     color: var(--el-text-color-placeholder);
     white-space: nowrap;
+
+    &--mobile {
+      margin-left: 0;
+    }
+  }
+
+  &__drawer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-lg);
   }
 }
 

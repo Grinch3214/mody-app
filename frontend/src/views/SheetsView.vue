@@ -2,7 +2,8 @@
   <div class="sheets container">
     <SheetFilters />
 
-    <el-auto-resizer class="sheets__table">
+    <!-- Desktop: virtual table -->
+    <el-auto-resizer v-if="!isMobile" class="sheets__table">
       <template #default="{ height, width }">
         <el-table-v2
           v-loading="store.loading"
@@ -13,6 +14,13 @@
         />
       </template>
     </el-auto-resizer>
+
+    <!-- Mobile: card grid -->
+    <div v-else v-loading="store.loading" class="sheets__cards">
+      <div v-for="(product, i) in store.products" :key="i" class="sheets__card-item">
+        <ProductCard :product="product" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -21,12 +29,15 @@ import { h, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useGeneralStore } from '@/stores/general'
 import { useAuthStore } from '@/stores/auth'
+import { useBreakpoint } from '@/composables/useBreakpoint'
 import SheetFilters from '@/components/sheets/SheetFilters.vue'
+import ProductCard from '@/components/sheets/ProductCard.vue'
 import type { Product, Stock } from '@/types/product'
 
 const store = useGeneralStore()
 const auth = useAuthStore()
 const { t } = useI18n()
+const { isMobile } = useBreakpoint()
 
 // --- helpers ---
 
@@ -89,7 +100,10 @@ const columns = computed(() => {
       width: 90,
       align: 'center',
       cellRenderer: ({ rowData }: CellProps) =>
-        h('span', rowData.volume === 1 ? `1 ${t('units.unit')}` : `${rowData.volume} ${t('units.ml')}`),
+        h(
+          'span',
+          rowData.volume === 1 ? `1 ${t('units.unit')}` : `${rowData.volume} ${t('units.ml')}`,
+        ),
     },
     {
       key: 'p_full',
@@ -151,7 +165,6 @@ const columns = computed(() => {
     },
   ]
 })
-
 </script>
 
 <style lang="scss" scoped>
@@ -161,6 +174,25 @@ const columns = computed(() => {
   height: calc(100vh - var(--header-height, 64px) - var(--footer-height, 72px));
   padding-block: var(--spacing-lg);
   gap: var(--spacing-md);
+
+  &__cards {
+    flex: 1;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    align-content: start;
+    padding-bottom: var(--spacing-lg);
+
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__card-item {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 240px;
+  }
 
   &__table {
     flex: 1;
