@@ -71,7 +71,6 @@ export class SheetsService implements OnModuleInit, OnModuleDestroy {
 
     this.logger.log(`Saved ${rows.length} products to DB`);
 
-    // Сбрасываем таймер — 2 часа отсчитываются от этого момента
     this.scheduleNext();
   }
 
