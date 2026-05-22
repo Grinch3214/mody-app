@@ -180,7 +180,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { ElNotification } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
@@ -231,6 +231,19 @@ function resetAndClose() {
   reset()
   drawerOpen.value = false
 }
+
+watch(
+  () => route.query,
+  (q) => {
+    const hasState = name.value || selectedBrand.value || selectedSegments.value.length
+    if (Object.keys(q).length === 0 && hasState) {
+      name.value = ''
+      selectedBrand.value = ''
+      selectedSegments.value = []
+      void store.fetchProducts()
+    }
+  },
+)
 
 async function handleRefresh() {
   const success = await store.refreshProducts()
