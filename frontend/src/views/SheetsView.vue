@@ -148,7 +148,10 @@ const columns = computed(() => {
       width: 130,
       align: 'center',
       cellRenderer: ({ rowData }: CellProps) => {
-        if (!rowData.segment.toLowerCase().includes('состав')) {
+        const hasSplit =
+          rowData.segment.toLowerCase().includes('состав') &&
+          rowData.brand.toLowerCase() !== 'deeply'
+        if (!hasSplit) {
           return h('span', { style: { color: 'var(--el-text-color-placeholder)' } }, '—')
         }
         return h(

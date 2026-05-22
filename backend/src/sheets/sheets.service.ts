@@ -148,7 +148,8 @@ export class SheetsService implements OnModuleInit, OnModuleDestroy {
     const name = get('Назва') || get('Название');
     if (!name || !segment) return null;
 
-    const isRetail = segment.toLowerCase().includes('уход');
+    const seg = segment.toLowerCase();
+    const isRetail = seg.includes('уход') || seg.includes('догляд');
 
     return {
       segment,
