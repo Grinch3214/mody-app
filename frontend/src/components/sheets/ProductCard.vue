@@ -20,6 +20,13 @@
         <span class="product-card__price-label">{{ row.label }}</span>
         <span class="product-card__price-value">{{ row.value }}</span>
       </li>
+      <li v-if="hasSplit" class="product-card__price-row">
+        <span class="product-card__price-label">{{ t('columns.splitPrice') }}</span>
+        <span class="product-card__price-split">
+          <el-tag type="info" size="small">{{ t('columns.onRequest') }}</el-tag>
+          <span class="product-card__split-sizes">500 · 250 · 100 · 50</span>
+        </span>
+      </li>
     </ul>
   </el-card>
 </template>
@@ -45,13 +52,15 @@ const priceRows = computed(() =>
   [
     { label: t('columns.priceFull'), value: props.product.prices.full },
     { label: t('columns.priceRetail'), value: props.product.prices.retail },
-    { label: t('columns.volumeSize', { size: 500 }), value: props.product.prices[500] },
-    { label: t('columns.volumeSize', { size: 250 }), value: props.product.prices[250] },
-    { label: t('columns.volumeSize', { size: 100 }), value: props.product.prices[100] },
-    { label: t('columns.volumeSize', { size: 50 }), value: props.product.prices[50] },
   ]
     .filter((r) => r.value !== null)
     .map((r) => ({ label: r.label, value: formatPrice(r.value) })),
+)
+
+const hasSplit = computed(
+  () =>
+    props.product.segment.toLowerCase().includes('состав') &&
+    props.product.brand.toLowerCase() !== 'deeply',
 )
 
 const stockClass = computed(() => {
@@ -65,6 +74,7 @@ const stockClass = computed(() => {
 <style lang="scss" scoped>
 .product-card {
   overflow: visible;
+  height: 100%;
 
   &__header {
     display: flex;
@@ -131,6 +141,18 @@ const stockClass = computed(() => {
     font-weight: 500;
     text-align: right;
     white-space: nowrap;
+  }
+
+  &__price-split {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  &__split-sizes {
+    font-size: 11px;
+    color: var(--el-text-color-secondary);
   }
 }
 </style>
