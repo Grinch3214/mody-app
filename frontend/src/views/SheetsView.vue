@@ -123,10 +123,7 @@ const columns = computed(() => {
       width: 90,
       align: 'center',
       cellRenderer: ({ rowData }: CellProps) =>
-        h(
-          'span',
-          rowData.volume === 1 ? `1 ${t('units.unit')}` : `${rowData.volume} ${t('units.ml')}`,
-        ),
+        h('span', rowData.volume === 1 ? '1' : `${rowData.volume} ${t('units.ml')}`),
     },
     {
       key: 'p_full',
@@ -148,7 +145,10 @@ const columns = computed(() => {
       width: 130,
       align: 'center',
       cellRenderer: ({ rowData }: CellProps) => {
-        if (!rowData.segment.toLowerCase().includes('состав')) {
+        const hasSplit =
+          rowData.segment.toLowerCase().includes('состав') &&
+          rowData.brand.toLowerCase() !== 'deeply'
+        if (!hasSplit) {
           return h('span', { style: { color: 'var(--el-text-color-placeholder)' } }, '—')
         }
         return h(
@@ -156,7 +156,11 @@ const columns = computed(() => {
           { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' } },
           [
             h(ElTag, { type: 'info', size: 'small' }, () => t('columns.onRequest')),
-            h('span', { style: { fontSize: '11px', color: 'var(--el-text-color-secondary)' } }, '500 · 250 · 100 · 50'),
+            h(
+              'span',
+              { style: { fontSize: '11px', color: 'var(--el-text-color-secondary)' } },
+              '500 · 250 · 100 · 50',
+            ),
           ],
         )
       },

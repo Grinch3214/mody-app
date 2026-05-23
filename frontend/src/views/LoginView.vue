@@ -55,6 +55,7 @@ watch(
   &__header {
     display: flex;
     flex-direction: column;
+    text-align: center;
     gap: var(--spacing-xs);
   }
 

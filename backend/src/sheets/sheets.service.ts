@@ -71,7 +71,6 @@ export class SheetsService implements OnModuleInit, OnModuleDestroy {
 
     this.logger.log(`Saved ${rows.length} products to DB`);
 
-    // Сбрасываем таймер — 2 часа отсчитываются от этого момента
     this.scheduleNext();
   }
 
@@ -148,7 +147,8 @@ export class SheetsService implements OnModuleInit, OnModuleDestroy {
     const name = get('Назва') || get('Название');
     if (!name || !segment) return null;
 
-    const isRetail = segment.toLowerCase().includes('уход');
+    const seg = segment.toLowerCase();
+    const isRetail = seg.includes('уход') || seg.includes('догляд');
 
     return {
       segment,
