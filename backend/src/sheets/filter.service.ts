@@ -8,6 +8,7 @@ export class FilterService {
   constructor(private readonly sheetsService: SheetsService) {}
 
   private static readonly HIDDEN_SEGMENTS = ['тест', 'подарунки'];
+  private static readonly HIDDEN_BRANDS = ['roots'];
 
   private static readonly SYNONYMS: [string, string][] = [
     // --- Масла / Oil ---
@@ -144,6 +145,9 @@ export class FilterService {
       (p) =>
         !FilterService.HIDDEN_SEGMENTS.some((s) =>
           p.segment.toLowerCase().includes(s),
+        ) &&
+        !FilterService.HIDDEN_BRANDS.some((b) =>
+          p.brand.toLowerCase().includes(b),
         ),
     );
 
